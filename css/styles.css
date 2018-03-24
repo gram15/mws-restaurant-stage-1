@@ -326,4 +326,34 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
 }
+/* ====================== Media Queries ====================== */
+@media (min-width: 450px) and (max-width: 550px) {
+  #restaurants-list li {
+    max-width: 330px;
+    margin: 15px auto;
+  }
+}
 
+@media (min-width: 551px) and (max-width: 700px) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+  }
+}
+
+@media (min-width: 771px) and (max-width: 1023px) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+  }
+}
+
+@media (min-width:1024px) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+  }
+}
