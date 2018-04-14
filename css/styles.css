@@ -47,7 +47,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 
 #footer {
   background-color: #444;
-  color: #aaa;/*white?*/
+  color: white;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
@@ -55,9 +55,9 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-transform: uppercase;
 }
 
-/*header, section {
+header, section {
   width: 100%;
-}*/
+}
 
 article {
 	font-family: 'Roboto', sans-serif;
@@ -88,10 +88,12 @@ nav h1 a {
 }
 
 #breadcrumb {
-    padding: 1em;
+    /*padding: 10px 40px 16px;*/
     list-style: none;
     background-color: orange;
     font-size: 17px;
+    height: 35px;
+    line-height: 35px;
     margin: 0 auto;
 }
 
@@ -99,7 +101,7 @@ nav h1 a {
 /* Display list items side by side */
 #breadcrumb li {
     display: inline;
-    color: white;/*controllare*/
+    color: white;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
@@ -129,22 +131,21 @@ nav h1 a {
 
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
-  width: 100%;
   background-color: orange;
-  align-items: center !important;
+  align-items: center;
   font-family: 'Roboto', sans-serif;
 	font-size: 10pt;
   color: #333;
+  padding:1.5em;
 }
 
 .filter-options h2 {
   color: white;
   font-size: 1rem;
-  font-weight: bold;
+  /*font-weight: bold;*/
   letter-spacing: 1px;
   line-height: 1;
-  margin: 15px auto;
-  padding:0.5em;
+  margin: 0 20px;
 }
 
 .filter-options select {
@@ -157,38 +158,9 @@ nav h1 a {
   padding: 0 10px;
   min-width: 200px;
   max-width: 100%;
-  border: 1px solid orangered;
+  border: 1px solid white;
   outline: none;
 }
-
-/*.filter-options select:focus {
-  background-color: orange;
-  color:white;
-  outline: none;
-}*/
-
-/*.filter-options select:hover {
-  outline: none;
-}
-
-.filter-options select:focus {
-  outline: none;
-
-}
-
-.filter-options option:checked{
-  color:#444;
-}
-
-.filter-options option:hover{
-  color:orange;
-  border: 1px solid orangered;
-}
-.filter-options select:active
-{
-  outline: none;
-}
-*/
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
@@ -247,7 +219,6 @@ nav h1 a {
   display: inline-block;
   font-size: 10pt;
   margin: 16px auto;
-  /*padding: 1.5em 0;*/
   padding: 8px 32px;
   text-align: center;
   text-decoration: none;
@@ -256,19 +227,6 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Details ====================== */
-.inside header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-}
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
-}
- /*controllare*/
-
 .inside #map-container {
   background: orange none repeat scroll 0 0;
   height: 400px;
@@ -301,8 +259,8 @@ nav h1 a {
 #restaurant-address {
   font-size: 12pt;
   margin: 10px 0px;
- /* font-style: italic;
-  text-align: center;*/
+  font-style: italic;
+  text-align: center;
 }
 
 #restaurant-cuisine {
@@ -362,9 +320,8 @@ nav h1 a {
 }
 
 #reviews-list li {
-  background-color: #fff;
+  background-color: white;
   border: 1px solid orange;
-  /*border-radius: 25px 0 25px 0;*/
   border-radius: 10px 10px 10px 10px;
   display: block;
   list-style-type: none;
