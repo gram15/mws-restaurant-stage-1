@@ -1,4 +1,59 @@
+ /**
+  * App Helper class
+  */
 class AppHelper {
+
+  /**
+  * Starts Service worker
+  */
+  static startServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        if (!navigator.serviceWorker.controller) {
+          return;
+        }
+        // waiting
+        if (reg.waiting) {
+          var worker = reg.waiting;
+          worker.postMessage({
+            action: 'skipWaiting'
+          });
+          return;
+        }
+        //installing
+        if (reg.installing) {
+          var worker = reg.installing;
+          worker.addEventListener('statechange', () => {
+            if (worker.state == 'installed') {
+              worker.postMessage({
+                action: 'skipWaiting'
+              });
+            }
+          });
+          return;
+        }
+        // update found
+        reg.addEventListener('updatefound', () => {
+          var worker = reg.installing;
+          worker.addEventListener('statechange', () => {
+            if (worker.state == 'installed') {
+              worker.postMessage({
+                action: 'skipWaiting'
+              });
+            }
+          });
+        });
+      });
+      // refreshing
+      var refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (refreshing) return;
+        window.location.reload();
+        refreshing = true;
+      });
+    }
+  }
+
 
   /**
   * @description Change image suffix name based on string 
@@ -9,58 +64,5 @@ class AppHelper {
     var dotIndex = filename.lastIndexOf(".");
     if (dotIndex == -1) return filename + string;
     else return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
-  }
-
-  /**
-  * @description Service worker init and workflow"
-  */
-  static startServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then((reg) => {
-        if (!navigator.serviceWorker.controller) {
-          return;
-        }
-        if (reg.waiting) {
-          console.log('SW waiting')
-          var worker = reg.waiting;
-          worker.postMessage({
-            action: 'skipWaiting'
-          });
-          return;
-        }
-        if (reg.installing) {
-          console.log('SW installing')
-          var worker = reg.installing;
-          worker.addEventListener('statechange', () => {
-            if (worker.state == 'installed') {
-              console.log('SW installed')
-              worker.postMessage({
-                action: 'skipWaiting'
-              });
-            }
-          });
-          return;
-        }
-        reg.addEventListener('updatefound', () => {
-          console.log('SW update found')
-          var worker = reg.installing;
-          worker.addEventListener('statechange', () => {
-            if (worker.state == 'installed') {
-              console.log('SW installed')
-              worker.postMessage({
-                action: 'skipWaiting'
-              });
-            }
-          });
-        });
-      });
-      var refreshing;
-      navigator.serviceWorker.addEventListener('controllerchange', function () {
-        console.log('SW controllerchange')
-        if (refreshing) return;
-        window.location.reload();
-        refreshing = true;
-      });
-    }
   }
 }
