@@ -36,6 +36,7 @@ self.addEventListener('activate', function(event) {
     })
   );
 });
+
 self.addEventListener('fetch', function (event) {
   event.respondWith(
     caches.open(currentCacheName).then(function (cache) {
@@ -47,8 +48,8 @@ self.addEventListener('fetch', function (event) {
       });
     })
   );
-
 });
+
 self.addEventListener('message', function (event) {
   if (event.data.action === 'skipWaiting') {
     self.skipWaiting();
