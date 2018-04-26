@@ -53,16 +53,6 @@ class AppHelper {
       });
     }
   }
-
-
-  /**
-  * @description Change image suffix name based on string 
-  * @param {string} filename - Name of file to change
-  * @param {string} string - Suffix to append
-  */
-  static setSuffixToFile(filename, string) {
-    var dotIndex = filename.lastIndexOf(".");
-    if (dotIndex == -1) return filename + string;
-    else return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
-  }
 }
+
+  
