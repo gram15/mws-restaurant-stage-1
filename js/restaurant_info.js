@@ -68,6 +68,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
   image.alt = `Picture of ${restaurant.name} restaurant`;
+  image.setAttribute('aria-labelledby', "fig_" + restaurant.id);//controllare
+  image.setAttribute('role', 'img');
   image.src = DBHelper.imageUrlForRestaurant(restaurant,'600');
 
   // Insert source before image
