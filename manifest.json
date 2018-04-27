@@ -1,0 +1,10 @@
+{
+    "name": "Restaurant Reviews",
+    "short_name": "RestReviews",
+    "scope": "/",
+    "display": "standalone",
+    "start_url": "/",
+    "background_color": "orange",
+    "theme_color": "orange",
+    "orientation": "portrait"
+}

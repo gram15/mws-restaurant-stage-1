@@ -9,8 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 8000 // Change this to your server port
-    return `/data/restaurants.json`;// FIXME changed this path for lan devices
-    //return `http://localhost:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/data/restaurants.json`;
   }
 
   /**
@@ -150,8 +149,8 @@ class DBHelper {
   /**
    * Restaurant image URL.
    */
-  static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+  static imageUrlForRestaurant(restaurant,size) {
+    return (`/img/${restaurant.id}_${size}.webp`);
   }
 
   /**
