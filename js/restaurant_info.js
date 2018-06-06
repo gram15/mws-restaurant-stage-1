@@ -1,23 +1,28 @@
 let restaurant;
-var map;
+var staticMapUrl;
 
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+//window.initMap = () => {
+document.body.onload=()=>{
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
+      /*self.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
-      });
+      });*/
       fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=512x200&scale=2&zoom=11&center=${restaurant.latlng.lat},${restaurant.latlng.lng}&key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:red%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+      const staticMapImage = document.getElementById('map');
+      staticMapImage.alt = 'Map containing current restaurant location';
+      staticMapImage.src = staticMapUrl;
+      //DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
       // Inits service worker
-      AppHelper.startServiceWorker();
+      //AppHelper.startServiceWorker();
     }
   });
 }
@@ -68,7 +73,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
   image.alt = `Picture of ${restaurant.name} restaurant`;
-  image.setAttribute('aria-labelledby', "fig_" + restaurant.id);//controllare
+  //image.setAttribute('aria-label', "fig_" + restaurant.id);//controllare
   image.setAttribute('role', 'img');
   image.src = DBHelper.imageUrlForRestaurant(restaurant,'600');
 
@@ -184,3 +189,5 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+AppHelper.startServiceWorker();

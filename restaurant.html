@@ -77,11 +77,27 @@
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="application/javascript" charset="utf-8" src="js/restaurant_info.js"></script>
- 
-  <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
 
+  <noscript id="deferred-styles">
+    <link rel="stylesheet" href="css/styles.css">
+  </noscript>
+  <script>
+    var loadDeferredStyles = function () {
+      var addStylesNode = document.getElementById("deferred-styles");
+      var replacement = document.createElement("div");
+      replacement.innerHTML = addStylesNode.textContent;
+      document.body.appendChild(replacement)
+      addStylesNode.parentElement.removeChild(addStylesNode);
+    };
+    var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    if (raf) raf(function () {
+      window.setTimeout(loadDeferredStyles, 0);
+    });
+    else window.addEventListener('load', loadDeferredStyles);
+  </script>
+  
 </body>
 
 </html>

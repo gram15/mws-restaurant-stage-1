@@ -1,15 +1,17 @@
 let restaurants,
   neighborhoods,
   cuisines
-var map
-var markers = []
+var staticMapUrl;
+//var markers = []
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=512x200&scale=2&zoom=11&center=40.722216,-73.987501&key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:red`
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
 });
 
 /**
@@ -68,22 +70,6 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 }
 
 /**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  updateRestaurants();
-}
-
-/**
  * Update page and map for current restaurants.
  */
 updateRestaurants = () => {
@@ -116,8 +102,8 @@ resetRestaurants = (restaurants) => {
   ul.innerHTML = '';
 
   // Remove all map markers
-  self.markers.forEach(m => m.setMap(null));
-  self.markers = [];
+  //self.markers.forEach(m => m.setMap(null));//AM controllare
+  //self.markers = [];
   self.restaurants = restaurants;
 }
 
@@ -130,20 +116,29 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
     ul.append(createRestaurantHTML(restaurant));
   });
   addMarkersToMap();
+  lazyLoad();
 }
 
 /**
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+  // Lazy loading images as per David Walsh method:
+  // https://davidwalsh.name/lazyload-image-fade
+  const imageUrl = DBHelper.imageUrlForRestaurant(restaurant,'300');
   const li = document.createElement('article');
+
+  const noscriptImage = document.createElement('noscript');
+  noscriptImage.setAttribute('data-src', imageUrl);
+  noscriptImage.setAttribute('class', 'lazy-image');
+  
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.setAttribute('aria-labelledby', "fig_" + restaurant.id);
   image.setAttribute('role', 'img');
   image.alt = `Picture of ${restaurant.name} restaurant`;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant,'300');
-  li.append(image);
+  image.src = imageUrl;
+  noscriptImage.append(image);
+  li.append(noscriptImage);
 
   const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
@@ -173,13 +168,32 @@ createRestaurantHTML = (restaurant) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
+    staticMapUrl += `%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+  });
+  const mapImg = document.getElementById('map');
+  mapImg.alt = 'Map containing all restaurants locations';
+  mapImg.src = staticMapUrl;
+}
+
+/**
+ * Lazy loading images as per David Walsh method:
+ * https://davidwalsh.name/lazyload-image-fade
+ */
+lazyLoad = () => {
+  [].forEach.call(document.querySelectorAll('noscript.lazy-image'), function(noscript) {
+    var img = new Image();
+    img.setAttribute('data-src', '');
+    img.className = noscript.firstElementChild.className;
+    img.alt = noscript.firstElementChild.alt;
+    noscript.parentNode.insertBefore(img, noscript);
+    img.onload = function() {
+      img.removeAttribute('data-src');
+    };
+    img.src = noscript.getAttribute('data-src');
   });
 }
+
+
 
 /**
  * Starts Service Worker

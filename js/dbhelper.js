@@ -15,14 +15,14 @@ class DBHelper {
   /**
   * @description create or open local idb store
   */
- static openDatabase() {
+ static initDatabase() {
   // If the browser doesn't support service worker,
   // we don't care about having a database
   if (!navigator.serviceWorker) {
-    console.log('This browser doesn\'t support Service Worker');
+    console.log('Browser does not support Service Worker');
     return Promise.resolve();
     if (!('indexedDB' in window)) {
-      console.log('This browser doesn\'t support IndexedDB');
+      console.log('Browser does not support IndexedDB');
       return Promise.resolve();
     }
   }
@@ -33,17 +33,44 @@ class DBHelper {
     });
   });
 }
+
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    this._dbPromise = this.openDatabase();
-    fetch(DBHelper.DATABASE_URL).then(res=>res.json())
-        .then(res => callback(null, res))
-        .catch (error => callback(error, null));
-    
-  }
+    fetch(DBHelper.DATABASE_URL).then((response) => {
+      return response.json();
+    }).then((restaurants) => {
+      this.initDatabase().then((db) => {
+        if (!db) return;
 
+        let transaction = db.transaction('restaurants', 'readwrite');
+        let objectStore = transaction.objectStore('restaurants');
+        //insert data from json response into DB 
+        restaurants.forEach(function (restaurant) {
+          objectStore.put(restaurant);
+        });
+
+        callback(null, restaurants);
+      });
+    }).catch((error) => {
+      console.log(error);
+      // Fallback to local data if online fails
+      this.initDatabase().then((db) => {
+          if (!db) return;
+
+          var transaction = db.transaction('restaurants')
+          var objectStore  = transaction.objectStore('restaurants');
+
+          objectStore.getAll().then(restaurants => {
+              callback(null, restaurants)
+            })
+            .catch(error => callback(error, null));
+        })
+        .catch(error => callback(error, null));
+    });
+  }
+  
   /**
    * Fetch a restaurant by its ID.
    */
