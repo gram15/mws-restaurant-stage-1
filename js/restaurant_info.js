@@ -2,30 +2,38 @@ let restaurant;
 var staticMapUrl;
 
 /**
- * Initialize Google map, called from HTML.
+ * Fetch restaurant as the page is loaded.
  */
-//window.initMap = () => {
-document.body.onload=()=>{
+document.addEventListener('DOMContentLoaded', (event) => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      /*self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });*/
       fillBreadcrumb();
-      staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=512x200&scale=2&zoom=11&center=${restaurant.latlng.lat},${restaurant.latlng.lng}&key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:red%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
-      const staticMapImage = document.getElementById('map');
-      staticMapImage.alt = 'Map containing current restaurant location';
-      staticMapImage.src = staticMapUrl;
-      //DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      const picture = document.getElementById('staticmap-picture');
+      // FIXME
+      // Use different maps image from 0 to 400px
+      const source = document.createElement('source');
+      source.media = '(max-width: 550px)';
+      source.srcset = 'https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&scale=1&zoom=12&size=550x350&key=AIzaSyBjEzrQVpR768JpvHrJKaHZtd2e_yBD0QM'
+                      + `&markers=size:mid%7Ccolor:red%7C${self.restaurant.latlng.lat},${self.restaurant.latlng.lng}`;
+    
+      
+      //staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=512x200&scale=2&zoom=11&center=${restaurant.latlng.lat},${restaurant.latlng.lng}&key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:red%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+      //const staticMapImage = document.getElementById('map');
+      // Standard image is resized to maximum 600px
+      const image = document.getElementById('staticmap');
+      image.alt = `${restaurant.name} map`;
+      image.src = 'https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&scale=2&zoom=11&size=512x200&key=AIzaSyBjEzrQVpR768JpvHrJKaHZtd2e_yBD0QM'
+      + `&markers=size:small%7Ccolor:red%7C${self.restaurant.latlng.lat},${self.restaurant.latlng.lng}`;
+    
+      // Insert source before image
+      picture.insertBefore(source, image);
       // Inits service worker
-      //AppHelper.startServiceWorker();
+      AppHelper.startServiceWorker();
     }
   });
-}
+});
 
 /**
  * Get current restaurant from page URL.
@@ -189,5 +197,3 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-
-AppHelper.startServiceWorker();

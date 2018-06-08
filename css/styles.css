@@ -137,6 +137,12 @@ nav h1 a {
   transition-delay: initial;*/
 }
 
+#staticmap {
+  height: 100%;
+  width: 100%;
+  background-color: #ccc;
+
+
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   background-color: orange;

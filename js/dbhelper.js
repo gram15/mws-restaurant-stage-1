@@ -38,31 +38,32 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL).then((response) => {
-      return response.json();
-    }).then((restaurants) => {
-      this.initDatabase().then((db) => {
+    fetch(DBHelper.DATABASE_URL).then(res => {
+      return res.json();
+    })
+    .then(restaurants => {
+      this.initDatabase().then(function (db) {
         if (!db) return;
 
-        let transaction = db.transaction('restaurants', 'readwrite');
-        let objectStore = transaction.objectStore('restaurants');
+        let tx = db.transaction('restaurants', 'readwrite')
+        let store = tx.objectStore('restaurants');
         //insert data from json response into DB 
         restaurants.forEach(function (restaurant) {
-          objectStore.put(restaurant);
+          store.put(restaurant);
         });
 
-        callback(null, restaurants);
+        callback(null, restaurants)
       });
-    }).catch((error) => {
-      console.log(error);
+    })
+    .catch(error => {
       // Fallback to local data if online fails
-      this.initDatabase().then((db) => {
+      this.initDatabase().then(function (db)  {
           if (!db) return;
 
-          var transaction = db.transaction('restaurants')
-          var objectStore  = transaction.objectStore('restaurants');
+          let tx = db.transaction('restaurants')
+          let store = tx.objectStore('restaurants');
 
-          objectStore.getAll().then(restaurants => {
+          store.getAll().then(restaurants => {
               callback(null, restaurants)
             })
             .catch(error => callback(error, null));
@@ -192,20 +193,4 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant,size) {
     return (`/img/${restaurant.id}_${size}.webp`);
   }
-
-  /**
-   * Map marker for a restaurant.
-   */
-  static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP
-    }
-    );
-    return marker;
-  }
-
 }

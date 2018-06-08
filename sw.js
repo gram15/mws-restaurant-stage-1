@@ -1,27 +1,7 @@
 var currentCacheName = 'mws-restaurant-stage1-v01';
 var apiUrl = 'http://localhost:1337/restaurants';
 
-var fileToCache = [
-    '/',
-    '/sw.js'//,
-   /* '/index.html',
-    '/restaurant.html',
-    '/css/styles.css',
-    '/js/main.js',
-    '/js/restaurant_info.js',
-    '/js/dbhelper.js',
-    '/js/apphelper.js',
-    '/img/',
-    '/data/'*/
-]
 
-self.addEventListener('install', function (event) {
-  event.waitUntil(
-    caches.open(currentCacheName).then(function (cache) {
-      return cache.addAll(fileToCache);
-    })
-  );
-});
 
 
 self.addEventListener('activate', function(event) {
