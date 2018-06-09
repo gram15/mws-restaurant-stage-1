@@ -1,13 +1,15 @@
 let restaurants,
   neighborhoods,
   cuisines
-var map
+var staticMapUrl;
 var markers = []
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  //staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=512x200&scale=2&zoom=11&center=40.722216,-73.987501&key=AIzaSyDFOaYDK-AO0efKW6cZu9ZfD8my9_qDiks&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:red`
+  updateRestaurants();
   fetchNeighborhoods();
   fetchCuisines();
 });
@@ -68,22 +70,6 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 }
 
 /**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  updateRestaurants();
-}
-
-/**
  * Update page and map for current restaurants.
  */
 updateRestaurants = () => {
@@ -102,6 +88,9 @@ updateRestaurants = () => {
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
+      // FIXME
+      // Add blazy after html filled
+      var bLazy = new Blazy();
     }
   })
 }
@@ -126,10 +115,23 @@ resetRestaurants = (restaurants) => {
  */
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
+  const picture = document.getElementById('staticmap-picture');
+// FIXME dimensione pixel verificare se coerente o da cambiare
+  // Use different maps image from 0 to 400px
+  const source = document.createElement('source');
+  source.media = '(max-width: 550px)';
+  source.srcset = 'https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&scale=1&zoom=12&size=550x350&key=AIzaSyBjEzrQVpR768JpvHrJKaHZtd2e_yBD0QM'
+  // Standard image is resized to maximum 600px
+  const image = document.getElementById('staticmap');
+  image.src = 'https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&scale=2&zoom=11&size=512x200&key=AIzaSyBjEzrQVpR768JpvHrJKaHZtd2e_yBD0QM';
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
+    source.srcset += `&markers=size:mid%7Ccolor:red%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+    image.src += `&markers=size:small%7Ccolor:red%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
   });
-  addMarkersToMap();
+
+  // Insert source before image
+  picture.insertBefore(source, image);
 }
 
 /**
@@ -138,11 +140,12 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('article');
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.setAttribute('aria-labelledby', "fig_" + restaurant.id);
+  image.className = 'restaurant-img b-lazy';
   image.setAttribute('role', 'img');
   image.alt = `Picture of ${restaurant.name} restaurant`;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant,'300');
+  // add blazy for lazy loading images
+  image.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant,300), '-300');
   li.append(image);
 
   const name = document.createElement('h3');
@@ -165,20 +168,6 @@ createRestaurantHTML = (restaurant) => {
   li.append(more);
 
   return li;
-}
-
-/**
- * Add markers for current restaurants to the map.
- */
-addMarkersToMap = (restaurants = self.restaurants) => {
-  restaurants.forEach(restaurant => {
-    // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
-  });
 }
 
 /**

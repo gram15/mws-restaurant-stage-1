@@ -15,14 +15,14 @@ class DBHelper {
   /**
   * @description create or open local idb store
   */
- static openDatabase() {
+ static initDatabase() {
   // If the browser doesn't support service worker,
   // we don't care about having a database
   if (!navigator.serviceWorker) {
-    console.log('This browser doesn\'t support Service Worker');
+    console.log('Browser does not support Service Worker');
     return Promise.resolve();
     if (!('indexedDB' in window)) {
-      console.log('This browser doesn\'t support IndexedDB');
+      console.log('Browser does not support IndexedDB');
       return Promise.resolve();
     }
   }
@@ -33,17 +33,45 @@ class DBHelper {
     });
   });
 }
+
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    this._dbPromise = this.openDatabase();
-    fetch(DBHelper.DATABASE_URL).then(res=>res.json())
-        .then(res => callback(null, res))
-        .catch (error => callback(error, null));
-    
-  }
+    fetch(DBHelper.DATABASE_URL).then(res => {
+      return res.json();
+    })
+    .then(restaurants => {
+      this.initDatabase().then(function (db) {
+        if (!db) return;
 
+        let tx = db.transaction('restaurants', 'readwrite')
+        let store = tx.objectStore('restaurants');
+        //insert data from json response into DB 
+        restaurants.forEach(function (restaurant) {
+          store.put(restaurant);
+        });
+
+        callback(null, restaurants)
+      });
+    })
+    .catch(error => {
+      // Fallback to local data if online fails
+      this.initDatabase().then(function (db)  {
+          if (!db) return;
+
+          let tx = db.transaction('restaurants')
+          let store = tx.objectStore('restaurants');
+
+          store.getAll().then(restaurants => {
+              callback(null, restaurants)
+            })
+            .catch(error => callback(error, null));
+        })
+        .catch(error => callback(error, null));
+    });
+  }
+  
   /**
    * Fetch a restaurant by its ID.
    */
@@ -165,20 +193,4 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant,size) {
     return (`/img/${restaurant.id}_${size}.webp`);
   }
-
-  /**
-   * Map marker for a restaurant.
-   */
-  static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP
-    }
-    );
-    return marker;
-  }
-
 }
