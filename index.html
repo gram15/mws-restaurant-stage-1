@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700' />
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.min.css">
   <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Restaurant Reviews">
@@ -22,10 +21,10 @@
 
   <main id="maincontent">
     <section id="map-container">
-      <!--<div id="map" role="application"></div>-->
-		<picture id="staticmap-picture">
-        	<img id="staticmap" alt="Map of all restaurants" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="/>
-     	</picture>
+      <picture id="staticmap-picture">
+        <!--added smallest transparent gif image-->
+        <img id="staticmap" alt="Map of all restaurants" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="/>
+      </picture>
     </section>
     <section>
       <div class="filter-options">
@@ -45,14 +44,15 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
-  <script type="application/javascript" charset="utf-8" src="js/idb.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/apphelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <!--<noscript id="deferred-styles">
-    <link rel="stylesheet" href="css/styles.css">
+  <script type="application/javascript" charset="utf-8" src="js/idb.min.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/apphelper.min.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/dbhelper.min.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/blazy.min.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/main.min.js"></script>
+  <noscript id="deferred-styles">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
   </noscript>
-   <script>
+  <script>
     var loadDeferredStyles = function () {
       var addStylesNode = document.getElementById("deferred-styles");
       var replacement = document.createElement("div");
@@ -62,11 +62,9 @@
     };
     var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
       window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-    if (raf) raf(function () {
-      window.setTimeout(loadDeferredStyles, 0);
-    });
+    if (raf) raf(function () { window.setTimeout(loadDeferredStyles, 0); });
     else window.addEventListener('load', loadDeferredStyles);
-  </script>-->
+  </script>
 
 </body>
 

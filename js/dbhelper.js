@@ -56,7 +56,7 @@ class DBHelper {
       });
     })
     .catch(error => {
-      // Fallback to local data if online fails
+      //Try to catch local data from idb if online request fails
       this.initDatabase().then(function (db)  {
           if (!db) return;
 

@@ -124,24 +124,16 @@ nav h1 a {
 }
 
 /* ====================== Map ====================== */
-#map, #map-container {
+#map-container {
   width: 100%;
   background-color: #ccc;
-  /*display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  transition: 1s;
-  transition-property: initial;
-  transition-duration: 1s;
-  transition-timing-function: initial;
-  transition-delay: initial;*/
 }
 
 #staticmap {
   height: 100%;
   width: 100%;
   background-color: #ccc;
-
+}
 
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
@@ -251,17 +243,6 @@ nav h1 a {
   height: 100%;
   width: 100%;
 }
-/*.inside #map-container,
-.inside #map {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  transition: 1s;
-  transition-property: initial;
-  transition-duration: 1s;
-  transition-timing-function: initial;
-  transition-delay: initial;
-}*/
 
 #restaurant-name {
   color: #f18200;
