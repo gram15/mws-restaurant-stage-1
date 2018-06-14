@@ -368,10 +368,10 @@ nav h1 a {
     display: flex;
     flex-wrap: wrap;
   }
-  .restaurant-deskvieport:first-of-type {
+  .restaurant-deskviewport:first-of-type {
     margin-right: 15px;
   }
-  .restaurant-deskvieport {
+  .restaurant-deskviewport {
     width: calc(50% - 10px);
   }
 
